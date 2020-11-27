@@ -20,23 +20,11 @@ RUN set -x \
   && apt clean \
   && rm -rf /var/lib/apt/lists/*
 
-# RUN set -x \
-#   && docker-php-ext-install pdo_pgsql pgsql zip \
-#   && pecl install xdebug-2.9.6 \
-#   && docker-php-ext-enable xdebug \
-#   && pecl install imagick \
-#   && docker-php-ext-enable imagick \
-#   && a2enmod rewrite
-
 RUN set -x \
   && pip install --upgrade pip --no-cache-dir \
   && pip install flask
 
 WORKDIR /tmp
-
-RUN set -x \
-  && curl https://getmic.ro | bash \
-  && mv micro /usr/local/bin
 
 
 ENV LANG ja_JP.UTF-8
@@ -61,3 +49,8 @@ WORKDIR /apps
 # `docker-compose exec --user hoge app bash`
 # USER ${APACHE_RUN_USER}
 # USER ${UNM}
+
+
+# volumeマウントさていない場所でvenvをする
+# python -m venv /home/buhi/pyvenv_dir/test2_venv
+# source /home/buhi/pyvenv_dir/test2_venv/bin/activate
