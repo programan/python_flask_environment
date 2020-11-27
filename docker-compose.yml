@@ -1,0 +1,43 @@
+version: "3.7"
+
+# docker-compose run --rm --service-port app bash
+# docker-compose up -d
+services:
+  app:
+    # build: .
+    build:
+      context: .
+      dockerfile: ./python/build/Dockerfile
+      args:
+        UID: "${LOCAL_UID:-2001}"
+        GID: "${LOCAL_GID:-2001}"
+        UNM: "${LOCAL_USER_NAME:-foobar}"
+    volumes:
+      - ./apps:/apps
+    # environment:
+    #   # ビルド後に参照できるようになる変数
+    ports:
+      # --service-ports
+      - "10080:10080"
+    stdin_open: true
+    tty: true
+    # extra_hosts:
+    #   - "local_dev:$HOST_IP_ADDR"
+    depends_on:
+      - db
+  db:
+    build:
+      context: .
+      dockerfile: ./db/build/Dockerfile
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - data:/var/lib/postgresql/data
+volumes:
+  data:
+    external:
+      name: pgdata11_2
